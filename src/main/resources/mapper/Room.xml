@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RoomDao">
+
+    <sql id="entity">room</sql>
+    <sql id="id">id</sql>
+    <sql id="column">id, houseId, name, area, used</sql>
+
+    <insert id="save">
+        INSERT INTO
+        <include refid="entity"/>
+        (
+        <include refid="column"/>
+        )
+        VALUES
+        (NULL, #{houseId}, #{name}, #{area}, #{used})
+    </insert>
+
+    <update id="update">
+        UPDATE
+        <include refid="entity"/>
+        SET
+        houseId = #{houseId}, name = #{name}, area = #{area}, used = #{used}
+        WHERE
+        <include refid="id"/>
+        = #{id}
+    </update>
+
+    <select id="findById" resultType="Room">
+        SELECT * FROM
+        <include refid="entity"/>
+        WHERE
+        <include refid="id"/>
+        = #{id}
+    </select>
+
+    <select id="findAll" resultType="Room">
+        SELECT * FROM
+        <include refid="entity"/>
+        ORDER BY
+        <include refid="id"/>
+        DESC
+    </select>
+
+    <select id="findList" resultType="Room">
+        SELECT * FROM
+        <include refid="entity"/>
+        WHERE 1 = 1
+        <if test="houseId > 0">
+            AND houseId = #{houseId}
+        </if>
+        <if test="name != null">
+            AND name = #{name}
+        </if>
+        <if test="used != null">
+            AND used = #{used}
+        </if>
+        <if test="sort != null and order!= null">
+            ORDER BY #{sort} #{order}
+        </if>
+        <if test="offset >=0 and length > 0">
+            limit #{offset}, #{length}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        SELECT COUNT(1) FROM
+        <include refid="entity"/>
+        WHERE 1 = 1
+        <if test="houseId > 0">
+            AND houseId = #{houseId}
+        </if>
+        <if test="name != null">
+            AND name = #{name}
+        </if>
+        <if test="used != null">
+            AND used = #{used}
+        </if>
+    </select>
+
+</mapper>

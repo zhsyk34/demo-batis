@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FeeRefDao">
+
+    <sql id="entity">feeref</sql>
+    <sql id="id">id</sql>
+    <sql id="column">id, gridId, gridType, feeType, calcType, price, unit, begin, end</sql>
+
+    <insert id="save">
+        INSERT INTO
+        <include refid="entity"/>
+        (
+        <include refid="column"/>
+        )
+        VALUES
+        (NULL, #{gridId}, #{gridType}, #{feeType}, #{calcType}, #{price}, #{unit}, #{begin}, #{end})
+    </insert>
+
+    <update id="update">
+        UPDATE
+        <include refid="entity"/>
+        SET
+        gridId = #{gridId}, gridType = #{gridType}, feeType = #{feeType}, calcType = #{calcType}, price = #{price}, unit = #{unit}, begin = #{begin}, end = #{end}
+        WHERE
+        <include refid="id"/>
+        = #{id}
+    </update>
+
+    <select id="findById" resultType="FeeRef">
+        SELECT * FROM
+        <include refid="entity"/>
+        WHERE
+        <include refid="id"/>
+        = #{id}
+    </select>
+
+    <select id="findAll" resultType="FeeRef">
+        SELECT * FROM
+        <include refid="entity"/>
+        ORDER BY
+        <include refid="id"/>
+        DESC
+    </select>
+
+    <select id="findList" resultType="FeeRef">
+        SELECT * FROM
+        <include refid="entity"/>
+        WHERE 1 = 1
+        <if test="gridId > 0">
+            AND gridId = #{gridId}
+        </if>
+        <if test="gridType != null">
+            AND gridType = #{gridType}
+        </if>
+        <if test="feeType != null">
+            AND feeType = #{feeType}
+        </if>
+        <if test="begin != null">
+            AND date <![CDATA[ >= ]]> #{begin}
+        </if>
+        <if test="end != null">
+            AND date <![CDATA[ <= ]]> #{end}
+        </if>
+        <if test="sort != null and order!= null">
+            ORDER BY #{sort} #{order}
+        </if>
+        <if test="offset >=0 and length > 0">
+            limit #{offset}, #{length}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        SELECT COUNT(1) FROM
+        <include refid="entity"/>
+        WHERE 1 = 1
+        <if test="gridId > 0">
+            AND gridId = #{gridId}
+        </if>
+        <if test="gridType != null">
+            AND gridType = #{gridType}
+        </if>
+        <if test="feeType != null">
+            AND feeType = #{feeType}
+        </if>
+        <if test="begin != null">
+            AND date <![CDATA[ >= ]]> #{begin}
+        </if>
+        <if test="end != null">
+            AND date <![CDATA[ <= ]]> #{end}
+        </if>
+    </select>
+
+</mapper>
