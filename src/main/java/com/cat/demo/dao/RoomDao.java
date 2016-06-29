@@ -1,8 +1,9 @@
 package com.cat.demo.dao;
 
-import com.cat.demo.entity.Room;
-
 import java.util.List;
+import java.util.Map;
+
+import com.cat.demo.entity.Room;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -20,4 +21,9 @@ public interface RoomDao {
 	List<Room> findList(int houseId, String name, Boolean used);
 
 	int count(int houseId, String name, Boolean used);
+
+	List<Room> findList(int houseId);
+
+	List<Map<String, Object>> findListWithFee(int houseId, String name, Boolean used);
+
 }

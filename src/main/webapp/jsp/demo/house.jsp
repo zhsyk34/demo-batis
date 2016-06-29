@@ -30,9 +30,10 @@
 					<option value="0">未出租</option>
 				</select>
 			</div>
-			
+
 			<div class="inline">
 				<button class="btn btn-primary btn-small" id="find">查询</button>
+				<button class="btn btn-info btn-small" id="clear">清空</button>
 			</div>
 		</nav>
 	</header>
@@ -41,13 +42,15 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th width="5%"><input id="check-parent" type="checkbox"></th>
-					<th width="15%">名称</th>
-					<th width="15%">面积</th>
-					<th width="15%">托管状态</th>
-					<th width="15%">出租状态</th>
-					<th width="20%">建造日期</th>
-					<th width="15%">租房</th>
+					<th width="5%">序号</th>
+					<th width="10%">名称</th>
+					<th width="10%">面积</th>
+					<th width="10%">托管状态</th>
+					<th width="10%">出租状态</th>
+					<th width="15%">出租单价</th>
+					<th width="15%">租金</th>
+					<th width="15%">建造日期</th>
+					<th width="10%">租房</th>
 				</tr>
 			</thead>
 			<tbody id="data"></tbody>
@@ -61,8 +64,39 @@
 	<div id="editor">
 		<table class="table table-hover table-edit">
 			<tr>
-				<th><input type="hidden" id="id"></th>
-				<td><input class="text" id="name"></td>
+				<th>类型</th>
+				<td id="type"><label><input type="radio" name="type" value="house">整租</label> <label><input type="radio" name="type" value="room">单租</label></td>
+			</tr>
+			<tr>
+				<th><input type="hidden" id="id">名称</th>
+				<td><input class="text" id="name" readonly></td>
+			</tr>
+			<tr>
+				<th>面积</th>
+				<td><input class="text" id="area" readonly placeholder="//TODO : 根据选择自动计算..."></td>
+			</tr>
+			<tr>
+				<th>房间</th>
+				<td><input class="text" id="rooms" readonly placeholder="//TODO : 根据选择自动计算..."></td>
+			</tr>
+			<tr>
+				<th>租金</th>
+				<td><input class="text" id="money" readonly placeholder="//TODO : 根据选择自动计算..."></td>
+			</tr>
+			<tr>
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="room-parent"></th>
+							<th>名称</th>
+							<th>面积</th>
+							<th>单价</th>
+							<th>租金</th>
+							<th>出租状态</th>
+						</tr>
+					</thead>
+					<tbody id="room-data"></tbody>
+				</table>
 			</tr>
 		</table>
 	</div>

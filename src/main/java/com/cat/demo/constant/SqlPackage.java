@@ -30,4 +30,9 @@ public class SqlPackage {
 	public final static String SQL_FINDALL = "findAll";
 	public final static String SQL_FINDLIST = "findList";
 	public final static String SQL_COUNT = "count";
+
+	/**
+	 * 各模块新增,如优化联表查询等...
+	 */
+	public final static String s = "";
 }

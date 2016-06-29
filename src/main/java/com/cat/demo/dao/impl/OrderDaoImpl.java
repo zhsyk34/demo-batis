@@ -1,18 +1,18 @@
 package com.cat.demo.dao.impl;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Repository;
+
 import com.cat.demo.constant.DictEnum;
 import com.cat.demo.dao.BaseDao;
 import com.cat.demo.dao.OrderDao;
 import com.cat.demo.entity.Order;
 import com.cat.demo.util.ArrayUtils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Repository;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -55,7 +55,6 @@ public class OrderDaoImpl extends BaseDao<Order, Integer> implements OrderDao {
 		return super.findById(id);
 	}
 
-	@Override
 	public List<Order> findList(String orderNo, int houseId, int tenantId, DictEnum.GridType gridType, Date date, DictEnum.OrderStatus status, String sort, String order, int offset, int length) {
 		Map<String, Object> map = new HashMap<>();
 
@@ -85,11 +84,13 @@ public class OrderDaoImpl extends BaseDao<Order, Integer> implements OrderDao {
 			map.put("offset", offset);
 			map.put("length", length);
 		}
+
 		return super.findList(map);
 	}
 
 	@Override
 	public List<Order> findList(String orderNo, int houseId, int tenantId, DictEnum.GridType gridType, Date date, DictEnum.OrderStatus status) {
+
 		return this.findList(orderNo, houseId, tenantId, gridType, date, status, null, null, -1, -1);
 	}
 }

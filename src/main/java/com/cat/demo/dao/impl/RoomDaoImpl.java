@@ -1,15 +1,15 @@
 package com.cat.demo.dao.impl;
 
-import com.cat.demo.dao.BaseDao;
-import com.cat.demo.dao.RoomDao;
-import com.cat.demo.entity.Room;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.cat.demo.dao.BaseDao;
+import com.cat.demo.dao.RoomDao;
+import com.cat.demo.entity.Room;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -74,4 +74,25 @@ public class RoomDaoImpl extends BaseDao<Room, Integer> implements RoomDao {
 		}
 		return super.count(map);
 	}
+
+	@Override
+	public List<Room> findList(int houseId) {
+		return this.findList(houseId, null, null);
+	}
+
+	@Override
+	public List<Map<String, Object>> findListWithFee(int houseId, String name, Boolean used) {
+		Map<String, Object> map = new HashMap<>();
+		if (houseId > 0) {
+			map.put("houseId", houseId);
+		}
+		if (StringUtils.isNotBlank(name)) {
+			map.put("name", "%" + name + "%");
+		}
+		if (used != null) {
+			map.put("used", used);
+		}
+		return super.findList("findListWithFee", map);
+	}
+
 }

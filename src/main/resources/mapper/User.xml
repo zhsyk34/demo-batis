@@ -2,149 +2,149 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="UserDao">
 
-    <!--table name -->
-    <sql id="entity">user</sql>
-    <!--primary key -->
-    <sql id="id">id</sql>
-    <!--all columns -->
-    <sql id="column">id, name, birthday</sql>
+	<!--table name -->
+	<sql id="entity">user</sql>
+	<!--primary key -->
+	<sql id="id">id</sql>
+	<!--all columns -->
+	<sql id="column">id, name, birthday</sql>
 
-    <insert id="save">
-        INSERT INTO
-        <include refid="entity"/>
-        (
-        <include refid="column"/>
-        )
-        VALUES
-        (NULL, #{name}, #{birthday})
-    </insert>
+	<insert id="save" keyProperty="id">
+		INSERT INTO
+		<include refid="entity" />
+		(
+		<include refid="column" />
+		)
+		VALUES
+		(NULL, #{name}, #{birthday})
+	</insert>
 
-    <insert id="saves">
-        INSERT INTO
-        <include refid="entity"/>
-        (
-        <include refid="column"/>
-        )
-        VALUES
-        <foreach collection="list" item="entity" separator=",">
-            (NULL, #{name}, #{birthday})
-        </foreach>
-    </insert>
+	<insert id="saves" keyProperty="id">
+		INSERT INTO
+		<include refid="entity" />
+		(
+		<include refid="column" />
+		)
+		VALUES
+		<foreach collection="list" item="entity" separator=",">
+			(NULL, #{name}, #{birthday})
+		</foreach>
+	</insert>
 
-    <delete id="deleteById">
-        DELETE FROM
-        <include refid="entity"/>
-        WHERE
-        <include refid="id"/>
-        = #{id}
-    </delete>
+	<delete id="deleteById">
+		DELETE FROM
+		<include refid="entity" />
+		WHERE
+		<include refid="id" />
+		= #{id}
+	</delete>
 
-    <delete id="deleteByEntity">
-        DELETE FROM
-        <include refid="entity"/>
-        WHERE
-        <include refid="id"/>
-        = #{id}
-    </delete>
+	<delete id="deleteByEntity">
+		DELETE FROM
+		<include refid="entity" />
+		WHERE
+		<include refid="id" />
+		= #{id}
+	</delete>
 
-    <delete id="deleteByIds">
-        DELETE FROM
-        <include refid="entity"/>
-        WHERE id IN
-        <foreach collection="array" item="id" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
+	<delete id="deleteByIds">
+		DELETE FROM
+		<include refid="entity" />
+		WHERE id IN
+		<foreach collection="array" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
 
-    <delete id="deleteByEntities">
-        DELETE FROM
-        <include refid="entity"/>
-        WHERE id IN
-        <foreach collection="list" item="entity" open="(" separator="," close=")">
-            #{entity.id}
-        </foreach>
-    </delete>
+	<delete id="deleteByEntities">
+		DELETE FROM
+		<include refid="entity" />
+		WHERE id IN
+		<foreach collection="list" item="entity" open="(" separator="," close=")">
+			#{entity.id}
+		</foreach>
+	</delete>
 
-    <!-- UPDATE user <set> <if test="name != null">name = #{name},</if> <if test="age > 0">age = #{age}</if> </set> WHERE id = #{id} -->
-    <!-- UPDATE user <trim prefix="SET" suffixOverrides=","> <if test="name != null">name = #{name},</if> <if test="age > 0">age = #{age},</if> </trim> WHERE id = #{id} -->
-    <update id="update">
-        UPDATE
-        <include refid="entity"/>
-        SET
-        name = #{name}, birthday = #{birthday}
-        WHERE
-        <include refid="id"/>
-        = #{id}
-    </update>
+	<!-- UPDATE user <set> <if test="name != null">name = #{name},</if> <if test="age > 0">age = #{age}</if> </set> WHERE id = #{id} -->
+	<!-- UPDATE user <trim prefix="SET" suffixOverrides=","> <if test="name != null">name = #{name},</if> <if test="age > 0">age = #{age},</if> </trim> WHERE id = #{id} -->
+	<update id="update">
+		UPDATE
+		<include refid="entity" />
+		SET
+		name = #{name}, birthday = #{birthday}
+		WHERE
+		<include refid="id" />
+		= #{id}
+	</update>
 
-    <update id="updates">
-        UPDATE
-        <include refid="entity"/>
-        SET
-        name =
-        CASE
-        <include refid="id"/>
-        <foreach collection="list" item="entity">
-            WHEN #{entity.id} THEN #{entity.name}
-        </foreach>
-        END
-        WHERE id IN
-        <foreach collection="list" item="entity" open="(" separator="," close=")">
-            #{entity.id}
-        </foreach>
-    </update>
+	<update id="updates">
+		UPDATE
+		<include refid="entity" />
+		SET
+		name =
+		CASE
+		<include refid="id" />
+		<foreach collection="list" item="entity">
+			WHEN #{entity.id} THEN #{entity.name}
+		</foreach>
+		END
+		WHERE id IN
+		<foreach collection="list" item="entity" open="(" separator="," close=")">
+			#{entity.id}
+		</foreach>
+	</update>
 
-    <select id="findById" resultType="User">
-        SELECT * FROM
-        <include refid="entity"/>
-        WHERE
-        <include refid="id"/>
-        = #{id}
-    </select>
+	<select id="findById" resultType="User">
+		SELECT * FROM
+		<include refid="entity" />
+		WHERE
+		<include refid="id" />
+		= #{id}
+	</select>
 
-    <select id="findAll" resultType="User">
-        SELECT * FROM
-        <include refid="entity"/>
-        ORDER BY
-        <include refid="id"/>
-        DESC
-    </select>
+	<select id="findAll" resultType="User">
+		SELECT * FROM
+		<include refid="entity" />
+		ORDER BY
+		<include refid="id" />
+		DESC
+	</select>
 
-    <select id="findList" resultType="User">
-        SELECT * FROM
-        <include refid="entity"/>
-        WHERE 1 = 1
-        <if test="name != null">
-            AND name LIKE #{name}
-        </if>
-        <if test="sort != null and order!= null">
-            ORDER BY #{sort} #{order}
-        </if>
-        <if test="offset >=0 and length > 0">
-            limit #{offset}, #{length}
-        </if>
-    </select>
+	<select id="findList" resultType="User">
+		SELECT * FROM
+		<include refid="entity" />
+		WHERE 1 = 1
+		<if test="name != null">
+			AND name LIKE #{name}
+		</if>
+		<if test="sort != null and order != null">
+			ORDER BY #{sort} #{order}
+		</if>
+		<if test="offset >= 0 and length > 0">
+			limit #{offset}, #{length}
+		</if>
+	</select>
 
-    <!--$ #的区别 -->
-    <!--ognl {数组:array,List:list,String&base type:_parameter,map:parameter} -->
-    <!--ognl foreach 遍历时的取值,array[index],list[index],_parameter.key/key -->
-    <!--<select id="count" resultType="int">-->
-    <!--SELECT COUNT(*) FROM-->
-    <!--<include refid="entity"/>-->
-    <!--<if test="_parameter != null and !_parameter.isEmpty()">-->
-    <!--WHERE-->
-    <!--<foreach collection="_parameter" separator="AND" index="key" item="value">-->
-    <!--${key} #{value}-->
-    <!--</foreach>-->
-    <!--</if>-->
-    <!--</select>-->
-    <select id="count" resultType="int">
-        SELECT COUNT(1) FROM
-        <include refid="entity"/>
-        WHERE 1 = 1
-        <if test="name != null">
-            AND name LIKE #{name}
-        </if>
-    </select>
+	<!--$ #的区别 -->
+	<!--ognl {数组:array,List:list,String&base type:_parameter,map:parameter} -->
+	<!--ognl foreach 遍历时的取值,array[index],list[index],_parameter.key/key -->
+	<!--<select id="count" resultType="int"> -->
+	<!--SELECT COUNT(*) FROM -->
+	<!--<include refid="entity"/> -->
+	<!--<if test="_parameter != null and !_parameter.isEmpty()"> -->
+	<!--WHERE -->
+	<!--<foreach collection="_parameter" separator="AND" index="key" item="value"> -->
+	<!--${key} #{value} -->
+	<!--</foreach> -->
+	<!--</if> -->
+	<!--</select> -->
+	<select id="count" resultType="int">
+		SELECT COUNT(1) FROM
+		<include refid="entity" />
+		WHERE 1 = 1
+		<if test="name != null">
+			AND name LIKE #{name}
+		</if>
+	</select>
 
 </mapper>

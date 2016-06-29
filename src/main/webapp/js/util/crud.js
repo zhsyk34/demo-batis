@@ -22,7 +22,7 @@ define([ "jquery", "modal", "page" ], function() {
 				success : function(data) {
 					switch (data.result) {
 					case "create":
-						$.alert();
+						$.alert("");
 						break;
 					case "update":
 						$.alert();
@@ -39,8 +39,11 @@ define([ "jquery", "modal", "page" ], function() {
 					case "revoke":
 						$.alert();
 						break;
+					case "success":
+						$.alert("已成功下单");
+						return;
 					case "error":
-						$.alert();
+						$.alert("出错了...");
 						return;
 					}
 					typeof callback == "function" && callback();

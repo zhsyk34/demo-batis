@@ -1,8 +1,8 @@
 package com.cat.demo.dao;
 
-import com.cat.demo.entity.Landlord;
-
 import java.util.List;
+
+import com.cat.demo.entity.Landlord;
 
 /**
  * Created by Archimedes on 2016/6/25.
@@ -23,8 +23,10 @@ public interface LandlordDao {
 
 	List<Landlord> findList(int userId, String sort, String order, int offset, int length);
 
-	Landlord findByUser(int userId);
+	List<Landlord> findList(String sort, String order, int offset, int length);
 
 	int count();
+
+	Landlord findByUser(int userId);
 
 }

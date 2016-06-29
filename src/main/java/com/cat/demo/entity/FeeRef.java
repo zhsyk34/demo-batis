@@ -13,7 +13,6 @@ public class FeeRef {
 	private int id;
 
 	// gridId+gridType联合定位计费目标(事实上的主键)
-	// 如gridId:1,gridType:house表示该费用标准范围为house
 	// 计费标准应在业务中明确,如grid:3,girdType:City,feeType:water表示城市3的水费标准...
 	private int gridId;
 	private DictEnum.GridType gridType;
@@ -28,7 +27,12 @@ public class FeeRef {
 
 	private Date begin;// 物价表开始执行的时间
 
-	private Date end;// 当前物价表的终止日期,为空默认为永久,当新增记录时,begin应与同gridId+girdType的上一条记录end时间衔接
+	/**
+	 * 当前物价表的终止日期,为空默认为永久
+	 * 当新增记录时,begin应与同gridId+girdType的上一条记录end时间衔接,如
+	 * 原记录为begin:2010-11-01,end:null在追加begin:2015-06-01时应将原end改为2015-06-01或(2015-05-31)
+	 */
+	private Date end;
 
 	public int getId() {
 		return id;

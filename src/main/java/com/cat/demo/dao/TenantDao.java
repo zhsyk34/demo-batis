@@ -1,8 +1,8 @@
 package com.cat.demo.dao;
 
-import com.cat.demo.entity.Tenant;
-
 import java.util.List;
+
+import com.cat.demo.entity.Tenant;
 
 /**
  * Created by Archimedes on 2016/6/25.
@@ -25,8 +25,10 @@ public interface TenantDao {
 
 	List<Tenant> findList(int userId, String sort, String order, int offset, int length);
 
-	Tenant findByUser(int userId);
+	List<Tenant> findList(String sort, String order, int offset, int length);
 
 	int count();
+
+	Tenant findByUser(int userId);
 
 }

@@ -6,7 +6,7 @@
     <sql id="id">id</sql>
     <sql id="column">id, userId</sql>
 
-    <insert id="save">
+    <insert id="save" keyProperty="id">
         INSERT INTO
         <include refid="entity"/>
         (
@@ -71,12 +71,12 @@
         <include refid="entity"/>
         WHERE 1 = 1
         <if test="userId > 0">
-            AND userid = #{userId}
+            AND userId = #{userId}
         </if>
-        <if test="sort != null and order!= null">
+        <if test="sort != null and order != null">
             ORDER BY #{sort} #{order}
         </if>
-        <if test="offset >=0 and length > 0">
+        <if test="offset >= 0 and length > 0">
             limit #{offset}, #{length}
         </if>
     </select>

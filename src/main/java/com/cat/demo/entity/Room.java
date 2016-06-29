@@ -12,7 +12,7 @@ public class Room {
 
 	private BigDecimal area;// 面积
 
-	private boolean used;// 是否已使用
+	private boolean used;// 是否已使用(也可不用,但需通过最新的订单查询状态)
 
 	public BigDecimal getArea() {
 		return area;

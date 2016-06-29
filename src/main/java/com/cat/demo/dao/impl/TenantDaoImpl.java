@@ -1,17 +1,17 @@
 package com.cat.demo.dao.impl;
 
-import com.cat.demo.dao.BaseDao;
-import com.cat.demo.dao.TenantDao;
-import com.cat.demo.entity.Tenant;
-import com.cat.demo.util.ArrayUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.cat.demo.dao.BaseDao;
+import com.cat.demo.dao.TenantDao;
+import com.cat.demo.entity.Tenant;
+import com.cat.demo.util.ArrayUtils;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -22,7 +22,8 @@ public class TenantDaoImpl extends BaseDao<Tenant, Integer> implements TenantDao
 	@Override
 	public int save(Tenant tenant) {
 		int userId = tenant.getUserId();
-		if (this.find(userId) == null) {
+
+		if (this.findByUser(userId) == null) {
 			return super.save(tenant);
 		}
 		return -1;
@@ -71,13 +72,19 @@ public class TenantDaoImpl extends BaseDao<Tenant, Integer> implements TenantDao
 	}
 
 	@Override
-	public Tenant findByUser(int userId) {
-		List<Tenant> tenants = this.findList(userId, null, null, -1, -1);
-		return CollectionUtils.isEmpty(tenants) ? null : tenants.get(0);
+	public List<Tenant> findList(String sort, String order, int offset, int length) {
+		return this.findList(-1, sort, order, offset, length);
 	}
 
 	@Override
 	public int count() {
 		return super.count(null);
 	}
+
+	@Override
+	public Tenant findByUser(int userId) {
+		List<Tenant> tenants = this.findList(userId, null, null, -1, -1);
+		return CollectionUtils.isEmpty(tenants) ? null : tenants.get(0);
+	}
+
 }

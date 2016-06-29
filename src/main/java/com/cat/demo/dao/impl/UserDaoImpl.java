@@ -1,16 +1,16 @@
 package com.cat.demo.dao.impl;
 
-import com.cat.demo.dao.BaseDao;
-import com.cat.demo.dao.UserDao;
-import com.cat.demo.entity.User;
-import com.cat.demo.util.ArrayUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.cat.demo.dao.BaseDao;
+import com.cat.demo.dao.UserDao;
+import com.cat.demo.entity.User;
+import com.cat.demo.util.ArrayUtils;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -53,6 +53,7 @@ public class UserDaoImpl extends BaseDao<User, Integer> implements UserDao {
 		return super.findById(id);
 	}
 
+	// netty
 	@Override
 	public List<User> findList(String name, String sort, String order, int offset, int length) {
 		Map<String, Object> map = new HashMap<>();

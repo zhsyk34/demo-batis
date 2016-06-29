@@ -1,7 +1,8 @@
 package com.cat.demo.entity;
 
 /**
- * Created by Archimedes on 2016/6/26.房东,类似于租客...
+ * Created by Archimedes on 2016/6/26
+ * 房东,类似于租客...
  */
 public class Landlord {
 

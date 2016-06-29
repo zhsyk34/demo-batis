@@ -1,16 +1,16 @@
 package com.cat.demo.entity;
 
-import com.cat.demo.constant.DictEnum;
-
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.cat.demo.constant.DictEnum;
 
 //按刻度收费时的数值记录表...
 public class FeeCount {
 
 	private int id;
 
-	private int houseId;// 这里简化处理为刻度在存在于house上(否则同样需要gridId+gridType联合定位)
+	private int houseId;// 这里简化处理为刻度只存在于house上(否则同样需要gridId+gridType联合定位)
 
 	private DictEnum.FeeType feeType;
 

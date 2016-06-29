@@ -1,17 +1,19 @@
 package com.cat.demo.dao.impl;
 
-import com.cat.demo.constant.DictEnum;
-import com.cat.demo.dao.BaseDao;
-import com.cat.demo.dao.FeeRefDao;
-import com.cat.demo.entity.FeeRef;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Repository;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Repository;
+
+import com.cat.demo.constant.DictEnum;
+import com.cat.demo.constant.DictEnum.FeeType;
+import com.cat.demo.constant.DictEnum.GridType;
+import com.cat.demo.dao.BaseDao;
+import com.cat.demo.dao.FeeRefDao;
+import com.cat.demo.entity.FeeRef;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -61,5 +63,10 @@ public class FeeRefDaoImpl extends BaseDao<FeeRef, Integer> implements FeeRefDao
 			map.put("length", length);
 		}
 		return super.findList(map);
+	}
+
+	@Override
+	public List<FeeRef> findList(int gridId, GridType gridType, FeeType feeType, Date begin, Date end) {
+		return this.findList(gridId, gridType, feeType, begin, end, null, null, -1, -1);
 	}
 }

@@ -6,7 +6,7 @@
     <sql id="id">id</sql>
     <sql id="column">id, houseId, feeType, ruling, date</sql>
 
-    <insert id="save">
+    <insert id="save" keyProperty="id">
         INSERT INTO
         <include refid="entity"/>
         (
@@ -58,10 +58,10 @@
         <if test="end != null">
             AND date <![CDATA[ <= ]]> #{end}
         </if>
-        <if test="sort != null and order!= null">
+        <if test="sort != null and order != null">
             ORDER BY #{sort} #{order}
         </if>
-        <if test="offset >=0 and length > 0">
+        <if test="offset >= 0 and length > 0">
             limit #{offset}, #{length}
         </if>
     </select>

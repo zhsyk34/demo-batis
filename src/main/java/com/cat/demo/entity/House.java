@@ -1,10 +1,10 @@
 package com.cat.demo.entity;
 
-import com.cat.demo.constant.DictEnum;
-import com.cat.demo.util.FormatUtil;
-
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.cat.demo.constant.DictEnum;
+import com.cat.demo.util.FormatUtil;
 
 public class House {
 
@@ -20,9 +20,9 @@ public class House {
 
 	private Date buildTime;// 模拟小区建筑时间...
 
-	private DictEnum.RentState rentState;// 托管状态
+	private DictEnum.RentState rentState;// 托管状态(如果支持整租的房源其下的grid被部分使用,则修改状态)
 
-	private boolean used;// 是否已使用(亦可省略,但需要查询其下所有房间的状态...)
+	private boolean used;// 是否已使用(亦可省略,但需要查询其下所有房间的状态)
 
 	public BigDecimal getArea() {
 		return area;

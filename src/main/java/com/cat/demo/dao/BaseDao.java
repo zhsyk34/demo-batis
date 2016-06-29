@@ -23,14 +23,12 @@ import javax.annotation.Resource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
-import org.springframework.stereotype.Repository;
 
 import com.cat.demo.util.ReflectUtil;
 
 /**
  * Created by Archimedes on 2016/6/25.
  */
-@Repository
 public class BaseDao<Entity, PrimaryKey> extends SqlSessionDaoSupport {
 
 	@Resource
@@ -97,6 +95,10 @@ public class BaseDao<Entity, PrimaryKey> extends SqlSessionDaoSupport {
 
 	public int count(Map<String, Object> map) {
 		return this.getSqlSession().selectOne(getSqlName(SQL_COUNT), map);
+	}
+
+	public List<Map<String, Object>> findList(String methodName, Map<String, Object> map) {
+		return this.getSqlSession().selectList(getSqlName(methodName), map);
 	}
 
 }

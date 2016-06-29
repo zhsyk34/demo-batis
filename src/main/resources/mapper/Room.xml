@@ -6,7 +6,7 @@
     <sql id="id">id</sql>
     <sql id="column">id, houseId, name, area, used</sql>
 
-    <insert id="save">
+    <insert id="save" keyProperty="id">
         INSERT INTO
         <include refid="entity"/>
         (
@@ -77,5 +77,21 @@
             AND used = #{used}
         </if>
     </select>
+    
+    <select id="findListWithFee" resultType="map">
+		SELECT r.*, f.price, f.unit, f.calcType FROM
+		<include refid="entity" /> r
+		JOIN feeref f ON r.id = f.gridId AND f.gridType = 'ROOM' AND feeType = 'RENT'
+		WHERE 1 = 1
+		<if test="houseId > 0">
+            AND r.houseId = #{houseId}
+        </if>
+        <if test="name != null">
+            AND r.name = #{name}
+        </if>
+        <if test="used != null">
+            AND r.used = #{used}
+        </if>
+	</select>
 
 </mapper>

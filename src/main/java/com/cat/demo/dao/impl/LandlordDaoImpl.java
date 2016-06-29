@@ -1,17 +1,17 @@
 package com.cat.demo.dao.impl;
 
-import com.cat.demo.dao.BaseDao;
-import com.cat.demo.dao.LandlordDao;
-import com.cat.demo.entity.Landlord;
-import com.cat.demo.util.ArrayUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.cat.demo.dao.BaseDao;
+import com.cat.demo.dao.LandlordDao;
+import com.cat.demo.entity.Landlord;
+import com.cat.demo.util.ArrayUtils;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -71,14 +71,19 @@ public class LandlordDaoImpl extends BaseDao<Landlord, Integer> implements Landl
 	}
 
 	@Override
-	public Landlord findByUser(int userId) {
-		List<Landlord> landlords = this.findList(userId, null, null, -1, -1);
-		return CollectionUtils.isEmpty(landlords) ? null : landlords.get(0);
+	public List<Landlord> findList(String sort, String order, int offset, int length) {
+		return this.findList(-1, sort, order, offset, length);
 	}
 
 	@Override
 	public int count() {
 		return super.count(null);
+	}
+
+	@Override
+	public Landlord findByUser(int userId) {
+		List<Landlord> landlords = this.findList(userId, null, null, -1, -1);
+		return CollectionUtils.isEmpty(landlords) ? null : landlords.get(0);
 	}
 
 }

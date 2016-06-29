@@ -1,6 +1,6 @@
 package com.cat.demo.entity;
 
-//订单中的房间明细1:n(如果为整租则罗列...)
+//订单中涉及到的下级房源,这里简化为只处理house-room模式
 public class OrderDetail {
 
 	private int id;

@@ -1,17 +1,18 @@
 package com.cat.demo.dao.impl;
 
-import com.cat.demo.constant.DictEnum;
-import com.cat.demo.dao.BaseDao;
-import com.cat.demo.dao.FeeCountDao;
-import com.cat.demo.entity.FeeCount;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Repository;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Repository;
+
+import com.cat.demo.constant.DictEnum;
+import com.cat.demo.constant.DictEnum.FeeType;
+import com.cat.demo.dao.BaseDao;
+import com.cat.demo.dao.FeeCountDao;
+import com.cat.demo.entity.FeeCount;
 
 /**
  * Created by Archimedes on 2016/6/26.
@@ -54,6 +55,11 @@ public class FeeCountDaoImpl extends BaseDao<FeeCount, Integer> implements FeeCo
 			map.put("length", length);
 		}
 		return super.findList(map);
+	}
+
+	@Override
+	public List<FeeCount> find(int houseId, FeeType feeType, Date begin, Date end, String sort, String order) {
+		return this.findList(houseId, feeType, begin, end, sort, order, -1, -1);
 	}
 
 }

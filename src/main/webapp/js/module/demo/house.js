@@ -1,30 +1,25 @@
 require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], function($, modal, page, checkctrl, crud, validate, tool) {
 	checkctrl.table($(".main table"));
-	// dialog();
+	dialog();
 	search();
 	find();
 	// remove();
 
 	function dialog() {
 		$("#editor").modal({
-			width : 300,
+			width : 500,
 			top : 100,
 			before : function() {
-				return merge();
+				return save();
 			},
 			reset : function() {
 				loadDialog();
 			}
 		});
-		$("#add").on("click", function() {
-			$("#editor").modal("title", "");
-			$("#editor").removeData("row");
-			loadDialog();
-			$("#editor").modal("open");
-		});
-		$("table").on("click", ".update", function() {
-			$("#editor").modal("title", "");
+		$("table").on("click", ".operation", function() {
+
 			var row = $(this).parents("tr").data("row");
+			$("#editor").modal("title", row.rentState + "选房");
 			$("#editor").data("row", row);
 			loadDialog();
 			$("#editor").modal("open");
@@ -33,60 +28,146 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 		function loadDialog() {
 			var row = $("#editor").data("row");
 			if (row) {
-				$("#id").val(row.id);
+				var houseId = row.id;
+				$("#id").val(houseId);
 				$("#name").val(row.name);
+				// $("#area").val(row.area);
+				// $("#rooms").val(row.rooms);
+
+				$.ajax({
+					url : "grid/room",
+					data : {
+						houseId : houseId
+					},
+					success : function(data) {
+						loadRoom(row.rentState, data);
+					}
+				});
 			} else {
 				$("#editor").modal("clear");
 			}
+
+			function select() {
+				function check() {
+					var type = $("#type").find(":radio:checked").val();
+					if (type == "house") {
+						$("#room-data").find(":checkbox").prop("checked", true).prop("disabled", true);
+					} else {
+						$("#room-data").prop("disabled", false);
+					}
+				}
+				$("#type").on("change", ":radio", function() {
+					check();
+				});
+
+			}
+
+			function loadRoom(state, data) {
+				var type = $("#type");
+
+				$("#room-data").empty();
+				$("#room-parent").prop("checked", false).prop("disabled", false);// 取消禁用
+
+				var str = "<tr>";
+				str += "<td><input type='checkbox'></td>";
+				str += "<td class='name'></td>";
+				str += "<td class='area'></td>";
+				str += "<td class='price'></td>";
+				str += "<td class='total'></td>";
+				str += "<td class='used'></td>";
+				str += "</tr>";
+
+				var btn = "<button class='btn btn-small btn-success'>选房</button>";
+
+				$.each(data, function(index, row) {
+					var used = row.used;
+
+					var tr = $(str).data("row", row);
+					tr.find(":checkbox").val(row.id);
+					tr.find(".name").text(row.name);
+					tr.find(".area").text(row.area);
+					tr.find(".price").text(row.price + " " + row.unit);
+
+					switch (row.calcType) {
+					case "COUNT":
+						tr.find(".total").text(row.price);
+						break;
+					case "RULING":
+						tr.find(".total").text((row.price * row.area).toFixed(2));
+						break;
+					}
+
+					tr.find(".used").text(used ? "已出租" : "未出租");
+
+					used && (tr.find(":checkbox").prop("checked", false).prop("disabled", true));
+
+					$("#room-data").append(tr);
+				});
+
+				// 托管类型
+				switch (state) {
+				case "BOTH":
+					type.find(":radio:first").prop("checked", true);
+					type.find(":radio").prop("disabled", false);
+					break;
+				case "WHOLE":
+					type.find(":radio[value='house']").prop("checked", true);
+					type.find(":radio").prop("disabled", true);
+					// 整租不允许选择
+					$("#room-parent").prop("checked", true).prop("disabled", true);
+					break;
+				case "SINGLE":
+					type.find(":radio[value='room']").prop("checked", true);
+					type.find(":radio").prop("disabled", true);
+					break;
+				case "STOP":
+					// 正常操作不会出现...
+					$.alert("不是吧?");
+					type.find(":radio").prop("checked", false);
+					type.find(":radio").prop("disabled", true);
+					break;
+				}
+				select();
+
+				checkctrl.general($("#room-parent"), $("#room-data").find("td :checkbox"));
+			}
 		}
 	}
 
-	function merge() {
-		var id = parseInt($("#id").val()) || null;
-		var name = $.trim($("#name").val());
-		var url = id ? "json/Style_update" : "json/Style_save";
+	function save() {// 保存订单
+		var houseId = parseInt($("#id").val()) || null;
 
-		if (validate.isEmpty(name)) {
-			$.alert("名称不能为空");
+		var type = $(":radio[name='type']:checked").val();
+
+		var roomIds = [];
+		$("#room-data").find(":checkbox:checked").each(function() {
+			var roomId = parseInt($(this).val());
+			roomIds.push(roomId);
+		});
+
+		if (!houseId) {
+			$.alert("不会吧?");
 			return false;
 		}
 
+		if (validate.isEmpty(type)) {
+			$.alert("请选择出租类型");
+			return false;
+		}
+
+		if (roomIds.length == 0) {
+			$.alert("请选择房间");
+			return false;
+		}
+
+		var url = "grid/save";
 		var params = {
-			id : id,
-			name : name
+			houseId : houseId,
+			type : type,
+			roomIds : roomIds
 		};
 
-		var exist = true;
-		$.ajax({
-			url : "json/Style_exist",
-			async : false,
-			data : params,
-			success : function(data) {
-				exist = data.exist;
-			}
-		});
-		if (exist) {
-			$.alert("");
-			return false;
-		}
-
 		crud.merge(url, params, find);
-	}
-
-	function remove() {
-		var url = "json/Style_delete";
-		$("#data").on("click", ".del", function() {
-			var id = parseInt($(this).parents("tr").find(":checkbox").val());
-			crud.del(url, id, find);
-		});
-		$("#del-all").on("click", function() {
-			var ids = [];
-			$('#data :checkbox:checked').each(function() {
-				var id = parseInt($(this).val());
-				ids.push(id);
-			});
-			crud.del(url, ids, find);
-		});
 	}
 
 	function search() {
@@ -103,6 +184,13 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 			});
 			find();
 		});
+		$("#clear").on("click", function() {
+			$("#search-name").val("");
+			$("nav").find("select").each(function() {
+				$(this).find("option:first").prop("selected", true);
+			});
+
+		});
 	}
 
 	function find() {
@@ -111,7 +199,7 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 		var used = $.trim($("#search-used").val());
 		var options = $("#page").page("options");
 		$.ajax({
-			url : "grid/list",
+			url : "grid/house",
 			data : {
 				name : name,
 				state : state,
@@ -120,7 +208,8 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 				pageSize : options.pageSize
 			},
 			success : function(data) {
-				load(data);
+				console.log(data);
+				load(data.list || []);
 				crud.page(data, find);
 			}
 		});
@@ -137,6 +226,8 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 			str += "<td class='area'></td>";
 			str += "<td class='state'></td>";
 			str += "<td class='used'></td>";
+			str += "<td class='price'></td>";
+			str += "<td class='total'></td>";
 			str += "<td class='build'></td>";
 			str += "<td class='operation'></td>";
 			str += "</tr>";
@@ -148,6 +239,7 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 				tr.find(".index").text(index + 1);
 				tr.find(".name").text(row.name);
 				tr.find(".area").text(row.area);
+				tr.find(".price").text(row.price + "  " + row.unit);
 
 				var state = row.rentState;
 				var used = row.used;
@@ -170,9 +262,16 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 					break;
 				}
 
-				if (!row.used && state != "STOP") {
-					tr.find(".operation").html(btn);
+				switch (row.calcType) {
+				case "COUNT":
+					tr.find(".total").text(row.price);
+					break;
+				case "RULING":
+					tr.find(".total").text((row.price * row.area).toFixed(2));
+					break;
 				}
+
+				!row.used && state != "STOP" && (tr.find(".operation").html(btn));
 
 				$("#data").append(tr);
 			});

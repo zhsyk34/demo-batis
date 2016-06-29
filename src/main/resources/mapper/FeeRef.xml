@@ -6,7 +6,7 @@
     <sql id="id">id</sql>
     <sql id="column">id, gridId, gridType, feeType, calcType, price, unit, begin, end</sql>
 
-    <insert id="save">
+    <insert id="save" keyProperty="id">
         INSERT INTO
         <include refid="entity"/>
         (
@@ -59,12 +59,12 @@
             AND date <![CDATA[ >= ]]> #{begin}
         </if>
         <if test="end != null">
-            AND date <![CDATA[ <= ]]> #{end}
+            AND (date <![CDATA[ <= ]]> #{end} OR end IS NULL)
         </if>
-        <if test="sort != null and order!= null">
+        <if test="sort != null and order != null">
             ORDER BY #{sort} #{order}
         </if>
-        <if test="offset >=0 and length > 0">
+        <if test="offset >= 0 and length > 0">
             limit #{offset}, #{length}
         </if>
     </select>
@@ -86,7 +86,7 @@
             AND date <![CDATA[ >= ]]> #{begin}
         </if>
         <if test="end != null">
-            AND date <![CDATA[ <= ]]> #{end}
+            AND (date <![CDATA[ <= ]]> #{end} OR end IS NULL)
         </if>
     </select>
 
