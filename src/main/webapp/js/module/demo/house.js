@@ -1,5 +1,4 @@
 require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], function($, modal, page, checkctrl, crud, validate, tool) {
-	checkctrl.table($(".main table"));
 	dialog();
 	search();
 	find();
@@ -19,7 +18,7 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 		$("table").on("click", ".operation", function() {
 
 			var row = $(this).parents("tr").data("row");
-			$("#editor").modal("title", row.rentState + "选房");
+			$("#editor").modal("title", "选房" + "(" + row.rentState + ")");
 			$("#editor").data("row", row);
 			loadDialog();
 			$("#editor").modal("open");
@@ -31,8 +30,6 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 				var houseId = row.id;
 				$("#id").val(houseId);
 				$("#name").val(row.name);
-				// $("#area").val(row.area);
-				// $("#rooms").val(row.rooms);
 
 				$.ajax({
 					url : "grid/room",
@@ -50,12 +47,17 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 			function select() {
 				function check() {
 					var type = $("#type").find(":radio:checked").val();
+					console.log("type", type);
 					if (type == "house") {
+						$("#room-parent").prop("checked", true).prop("disabled", false);
 						$("#room-data").find(":checkbox").prop("checked", true).prop("disabled", true);
+						$("#room-parent").prop("checked", true).prop("disabled", true);
 					} else {
-						$("#room-data").prop("disabled", false);
+						$("#room-data").find(":checkbox").prop("disabled", false);
+						$("#room-parent").prop("disabled", false);// 取消禁用
 					}
 				}
+				check();
 				$("#type").on("change", ":radio", function() {
 					check();
 				});
@@ -63,10 +65,7 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 			}
 
 			function loadRoom(state, data) {
-				var type = $("#type");
-
 				$("#room-data").empty();
-				$("#room-parent").prop("checked", false).prop("disabled", false);// 取消禁用
 
 				var str = "<tr>";
 				str += "<td><input type='checkbox'></td>";
@@ -74,13 +73,14 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 				str += "<td class='area'></td>";
 				str += "<td class='price'></td>";
 				str += "<td class='total'></td>";
-				str += "<td class='used'></td>";
 				str += "</tr>";
 
 				var btn = "<button class='btn btn-small btn-success'>选房</button>";
 
 				$.each(data, function(index, row) {
-					var used = row.used;
+					if (row.used) {
+						return;
+					}
 
 					var tr = $(str).data("row", row);
 					tr.find(":checkbox").val(row.id);
@@ -90,21 +90,18 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 
 					switch (row.calcType) {
 					case "COUNT":
-						tr.find(".total").text(row.price);
+						tr.find(".total").text(row.price.toFixed(2));
 						break;
 					case "RULING":
 						tr.find(".total").text((row.price * row.area).toFixed(2));
 						break;
 					}
 
-					tr.find(".used").text(used ? "已出租" : "未出租");
-
-					used && (tr.find(":checkbox").prop("checked", false).prop("disabled", true));
-
 					$("#room-data").append(tr);
 				});
 
 				// 托管类型
+				var type = $("#type");
 				switch (state) {
 				case "BOTH":
 					type.find(":radio:first").prop("checked", true);
@@ -113,18 +110,14 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 				case "WHOLE":
 					type.find(":radio[value='house']").prop("checked", true);
 					type.find(":radio").prop("disabled", true);
-					// 整租不允许选择
-					$("#room-parent").prop("checked", true).prop("disabled", true);
 					break;
 				case "SINGLE":
 					type.find(":radio[value='room']").prop("checked", true);
 					type.find(":radio").prop("disabled", true);
 					break;
 				case "STOP":
-					// 正常操作不会出现...
-					$.alert("不是吧?");
-					type.find(":radio").prop("checked", false);
-					type.find(":radio").prop("disabled", true);
+					$.alert("不是吧?");// 正常操作不会出现...
+					$("#editor").modal("close");
 					break;
 				}
 				select();
@@ -160,7 +153,7 @@ require([ "jquery", "modal", "page", "checkctrl", "crud", "validate", "tool" ], 
 			return false;
 		}
 
-		var url = "grid/save";
+		var url = "order/save";
 		var params = {
 			houseId : houseId,
 			type : type,

@@ -62,17 +62,7 @@ public class OrderServiceImpl implements OrderService {
 		if (house == null || house.isUsed()) {
 			return false;
 		}
-		// 1-3.
-		for (int i = 0; i < roomIds.length; i++) {
-			int roomId = roomIds[i];
-			Room room = roomDao.find(roomId);
-			if (room == null || room.isUsed()) {
-				return false;
-			}
-			room.setUsed(true);
-			roomDao.update(room);
-		}
-		// 1-4.与业务的托管类型校对
+		// 1-3.与业务的托管类型校对
 		switch (house.getRentState()) {
 		case BOTH:
 			house.setRentState(RentState.SINGLE);// 出租部分后只允许单租
@@ -88,13 +78,22 @@ public class OrderServiceImpl implements OrderService {
 			return false;// 业主已冻结...
 
 		}
-
-		// 1-5.如果为整租时,room必须全部...
+		// 1-4.如果为整租时,room必须全部...
 		if (gridType == GridType.HOUSE) {
 			int count = roomDao.count(houseId, null, false);
 			if (count != roomIds.length) {
 				return false;
 			}
+		}
+		// 1-5.
+		for (int i = 0; i < roomIds.length; i++) {
+			int roomId = roomIds[i];
+			Room room = roomDao.find(roomId);
+			if (room == null || room.isUsed()) {
+				return false;
+			}
+			room.setUsed(true);
+			roomDao.update(room);
 		}
 
 		// 2.保存父订单
@@ -128,10 +127,14 @@ public class OrderServiceImpl implements OrderService {
 		boolean houseUsed = true;
 		List<Room> rooms = roomDao.findList(houseId);
 		for (Room room : rooms) {
-			houseUsed = houseUsed && room.isUsed();
+			if (!room.isUsed()) {
+				houseUsed = false;
+				break;
+			}
 		}
+		System.out.println(houseUsed);
 		house.setUsed(houseUsed);
-		houseDao.save(house);
+		houseDao.update(house);
 
 		return true;
 	}

@@ -20,7 +20,8 @@ define([ "jquery", "modal", "page" ], function() {
 				traditional : true,
 				data : params,
 				success : function(data) {
-					switch (data.result) {
+					console.log("result", data);
+					switch (data) {
 					case "create":
 						$.alert("");
 						break;
@@ -41,10 +42,10 @@ define([ "jquery", "modal", "page" ], function() {
 						break;
 					case "success":
 						$.alert("已成功下单");
-						return;
+						break;
 					case "error":
 						$.alert("出错了...");
-						return;
+						break;
 					}
 					typeof callback == "function" && callback();
 				}

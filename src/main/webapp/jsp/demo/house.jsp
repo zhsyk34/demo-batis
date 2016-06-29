@@ -92,7 +92,6 @@
 							<th>面积</th>
 							<th>单价</th>
 							<th>租金</th>
-							<th>出租状态</th>
 						</tr>
 					</thead>
 					<tbody id="room-data"></tbody>
